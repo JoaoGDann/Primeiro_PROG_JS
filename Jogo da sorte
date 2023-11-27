@@ -1,0 +1,29 @@
+var numberToFind = 0;
+var attempts = 0;
+
+function refresh(){
+  
+  numberToFind = parseInt(Math.random() * 100);
+  console.log(numberToFind);
+}
+
+function verifyNumber(){
+  var bet = document.getElementById('bet').value;
+    if(bet > 100 || bet < 1){
+        alert('aposta inválida');
+        return;
+    }    
+    if (bet > numberToFind){
+       attempts++
+        alert('Número é menor, tente novamente!');
+    }
+    else if(bet < numberToFind){
+        attempts++
+        alert('Número é maior, tente novamente!');
+    }
+    else{
+        alert('Parabéns voce acertou!')
+    }
+}
+
+refresh();
