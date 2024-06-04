@@ -1,0 +1,13 @@
+#Kataka 1
+
+print('Olá bem vindo ao Banco-X!')
+titular_conta = input('Digite o nome do titular da conta: ')
+operacao = input('Digite a operação desejada: ')
+if operacao == 'deposito':
+  deposito = input('Digite o valor do depósito: ')
+  if deposito > '0':
+    print('Depósito realizado com sucesso!')
+  else:
+    print('valor inválido, digite novamente')
+else:
+  print('Operação não existente!')
