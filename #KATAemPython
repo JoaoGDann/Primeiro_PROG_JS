@@ -1,13 +1,142 @@
-#Kataka 1
+class ContaBancaria:
+    def __init__(self, titular, saldo_inicial=0.0, limite=0.0):
+        self.titular = titular
+        self.saldo = saldo_inicial
+        self.limite = limite
+        self.historico = []
 
-print('Olá bem vindo ao Banco-X!')
-titular_conta = input('Digite o nome do titular da conta: ')
-operacao = input('Digite a operação desejada: ')
-if operacao == 'deposito':
-  deposito = input('Digite o valor do depósito: ')
-  if deposito > '0':
-    print('Depósito realizado com sucesso!')
-  else:
-    print('valor inválido, digite novamente')
-else:
-  print('Operação não existente!')
+    def registrar_historico(self, operacao):
+        self.historico.append(operacao)
+
+    def depositar(self, valor):
+        if valor > 0:
+            self.saldo += valor
+            self.registrar_historico(f"Depósito de R${valor:.2f}")
+            print(f"Depósito de R${valor:.2f} realizado com sucesso.")
+        else:
+            print("O valor do depósito deve ser positivo.")
+
+    def sacar(self, valor):
+        if valor > 0:
+            if valor <= self.saldo + self.limite:
+                self.saldo -= valor
+                self.registrar_historico(f"Saque de R${valor:.2f}")
+                print(f"Saque de R${valor:.2f} realizado com sucesso.")
+            else:
+                print("Saldo insuficiente para realizar o saque, mesmo considerando o limite.")
+        else:
+            print("O valor do saque deve ser positivo.")
+
+    def verificar_saldo(self):
+        print(f"Saldo atual de {self.titular}: R${self.saldo:.2f}")
+        print(f"Limite disponível: R${self.limite:.2f}")
+
+    def transferir(self, valor, conta_destino):
+        if valor > 0:
+            if valor <= self.saldo + self.limite:
+                self.saldo -= valor
+                conta_destino.depositar(valor)
+                self.registrar_historico(f"Transferência de R${valor:.2f} para {conta_destino.titular}")
+                print(f"Transferência de R${valor:.2f} para {conta_destino.titular} realizada com sucesso.")
+            else:
+                print("Saldo insuficiente para realizar a transferência, mesmo considerando o limite.")
+        else:
+            print("O valor da transferência deve ser positivo.")
+
+    def exibir_historico(self):
+        print(f"Histórico de operações de {self.titular}:")
+        for operacao in self.historico:
+            print(operacao)
+def main():
+    print('Olá, bem-vindo ao Banco-X!')
+
+    contas = {}
+
+    while True:
+        print("\nOpções:")
+        print("1. Criar nova conta")
+        print("2. Realizar operação")
+        print("3. Sair")
+        escolha = input("Escolha uma opção: ").strip()
+
+        if escolha == '1':
+            titular_conta = input('Digite o nome do titular da conta: ')
+            saldo_inicial = float(input(f'Digite o saldo inicial da conta de {titular_conta}: '))
+            limite = float(input(f'Digite o limite da conta de {titular_conta}: '))
+            contas[titular_conta] = ContaBancaria(titular_conta, saldo_inicial, limite)
+            print(f"Conta de {titular_conta} criada com sucesso!")
+        elif escolha == '2':
+            while True:
+                print('\nOperações disponíveis:')
+                print('1. Depósito')
+                print('2. Saque')
+                print('3. Verificar saldo')
+                print('4. Transferência')
+                print('5. Exibir histórico')
+                print('6. Voltar')
+                operacao = input('Escolha uma operação: ').strip()
+                if operacao == '1':
+                    titular = input('Digite o nome do titular da conta: ')
+                    if titular in contas:
+                        try:
+                            deposito = float(input('Digite o valor do depósito: '))
+                            contas[titular].depositar(deposito)
+                        except ValueError:
+                            print('Valor inválido, digite um número válido.')
+                    else:
+                        print('Conta não encontrada.')
+
+                elif operacao == '2':
+                    titular = input('Digite o nome do titular da conta: ')
+                    if titular in contas:
+                        try:
+                            saque = float(input('Digite o valor do saque: '))
+                            contas[titular].sacar(saque)
+                        except ValueError:
+                            print('Valor inválido, digite um número válido.')
+                    else:
+                        print('Conta não encontrada.')
+
+                elif operacao == '3':
+                    titular = input('Digite o nome do titular da conta: ')
+                    if titular in contas:
+                        contas[titular].verificar_saldo()
+                    else:
+                        print('Conta não encontrada.')
+
+                elif operacao == '4':
+                    titular_origem = input('Digite o nome do titular da conta de origem: ')
+                    titular_destino = input('Digite o nome do titular da conta de destino: ')
+                    if titular_origem in contas and titular_destino in contas:
+                        try:
+                            valor_transferencia = float(input('Digite o valor da transferência: '))
+                            contas[titular_origem].transferir(valor_transferencia, contas[titular_destino])
+                        except ValueError:
+                            print('Valor inválido, digite um número válido.')
+                    else:
+                        print('Conta de origem ou destino não encontrada.')
+
+                elif operacao == '5':
+                    titular = input('Digite o nome do titular da conta: ')
+                    if titular in contas:
+                        contas[titular].exibir_historico()
+                    else:
+                        print('Conta não encontrada.')
+
+                elif operacao == '6':
+                    break
+                else:
+                    print('Operação não existente!')
+        elif escolha == '3':
+            print('Obrigado por usar o Banco-X. Até logo!')
+            break
+        else:
+            print('Opção inválida. Por favor, escolha uma opção válida.')
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
